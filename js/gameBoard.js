@@ -65,7 +65,6 @@ GameBoard.prototype.initDollars = function() {
 
 GameBoard.prototype.rotate = function(direction) {
     console.log(direction);
-    TweenLite.to(this.$el, 10, {css: {rotationX: 90}});
 };
 
 GameBoard.prototype.init = function() {
