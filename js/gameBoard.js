@@ -1,6 +1,6 @@
 var GameBoard = function() {
-    this.size = 8;           // Size in squares (board is an X by X by X cube)
-    this.unitSize = 50;       // Size of a square in pixels
+    this.size = 8;             // Size in squares (board is an X by X by X cube)
+    this.unitSize = 50;        // Size of a square in pixels
     this.container = '#container';
     this.$container = undefined;
     this.viewport = '#viewport';
@@ -8,7 +8,6 @@ var GameBoard = function() {
     this.el = '#gameBoard';
     this.$el = undefined;
     this.cubes = [];           // Mini-cubes Size[Size[size[]*]*]
-
 };
 
 GameBoard.prototype.initMiniCubes = function() {
@@ -42,12 +41,13 @@ GameBoard.prototype.initMiniCubes = function() {
         });
 };
 
-GameBoard.prototype.init = function() {
+GameBoard.prototype.initDollars = function() {
     var hw = this.unitSize*this.size;
 
     this.$el = $(this.el);
     this.$viewport = $(this.viewport);
     this.$container = $(this.container);
+
     this.$container.css({
         left: hw/2,
         top: hw
@@ -61,6 +61,16 @@ GameBoard.prototype.init = function() {
         '-moz-perspective': hw*1+'px',
         '-moz-perspective-origin': 'center',
     });
+};
+
+GameBoard.prototype.rotate = function(direction) {
+    console.log(direction);
+    TweenLite.to(this.$el, 10, {css: {rotationX: 90}});
+};
+
+GameBoard.prototype.init = function() {
+
+    this.initDollars();
 
     this.initMiniCubes();
 };
