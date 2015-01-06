@@ -10,19 +10,19 @@
         var code = e.keyCode,
             val;
         switch (code) {
-            case 38:
+            case 38: // Up arrow
                 e.preventDefault();
                 this.press('up');
                 return;
-            case 37:
+            case 37: // Left arrow
                 e.preventDefault();
                 this.press('left');
                 return;
-            case 39:
+            case 39: // Right arrow
                 e.preventDefault();
                 this.press('right');
                 return;
-            case 40:
+            case 40: // Down arrow
                 e.preventDefault();
                 this.press('down');
                 return;
