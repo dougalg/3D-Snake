@@ -1,52 +1,36 @@
-var MiniCube = function(x, y, z, plane) {
+var Cube = function(gl, canvas, options) {
+    options = options || {};
 
-    'use strict';
+    this.gl = gl;
+    this.canvas = canvas;
 
-    this.x = x;
-    this.y = y;
-    this.z = z;
-    this.plane = plane;
+    this.sideLength = options.sideLength;
+    this.x = options.x * this.sideLength;
+    this.y = options.y * this.sideLength;
+    this.z = options.z * this.sideLength;
 
-    var el = $(document.createElement('div'));
-    el.addClass('miniCube');
-    el.attr('data-x', x);
-    el.attr('data-y', y);
-    el.attr('data-z', z);
+    this.initShaders();
+    this.initBuffer();
+};
 
-    this.$el = el;
+Cube.prototype.initShaders = function() {
 
 };
 
-MiniCube.prototype.setTransform = function(unitSize, numUnits) {
-    var rotate = '',
-        translate = '';
-
-    var offset = -(unitSize*numUnits)/2,
-        xOff = (unitSize*this.x) + offset,
-        yOff = (unitSize*this.y) + offset,
-        zOff = (unitSize*this.z) + offset;
-
-    if (this.plane == 'x') {
-        zOff -= unitSize/2;
-        xOff += unitSize*(numUnits/2);
-        translate = 'translate3d('+xOff+'px, '+yOff+'px, '+zOff+'px)';
-    }
-    if (this.plane == 'y') {
-        zOff += unitSize/2;
-        xOff += unitSize*(numUnits/2);
-        translate = 'translate3d('+xOff+'px, '+yOff+'px, '+zOff+'px)';
-        rotate = 'rotateX(90deg) ';
-    }
-    if (this.plane == 'z') {
-        xOff += unitSize;
-        zOff += unitSize*((numUnits/2)-0.5);
-        rotate = 'rotateY(90deg) ';
-        translate = 'translate3d('+xOff+'px, '+yOff+'px, '+zOff+'px)';
-    }
-
-
-    this.$el.css({
-        '-webkit-transform': rotate+translate,
-        '-moz-transform': rotate+translate
-    });
+Cube.prototype.initBuffer = function() {
+    this.positionBuffer = this.gl.createBuffer();
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer);
+    this.vertices = [
+        this.x, this.y, this.z,
+        this.x, this.y+this.sideLength, this.z,
+        this.x+this.sideLength, this.y, this.z,
+        this.x+this.sideLength, this.y+this.sideLength, this.z,
+        this.x, this.y, this.z+this.sideLength,
+        this.x, this.y+this.sideLength, this.z+this.sideLength,
+        this.x+this.sideLength, this.y, this.z+this.sideLength,
+        this.x+this.sideLength, this.y+this.sideLength, this.z+this.sideLength,
+    ];
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(this.vertices), this.gl.STATIC_DRAW);
+    this.positionBuffer.itemSize = 3;
+    this.positionBuffer.numItems = 8;
 };

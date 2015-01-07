@@ -1,6 +1,6 @@
 (function(){
-    var gb = new GameBoard();
-    gb.init();
+
+    var gl, canvas, shaderProgram;
 
     press = function(direction) {
         gb.rotate(direction);
@@ -31,9 +31,43 @@
     };
 
     bindEvents = function() {
-        $(window).keydown(this.handleKeyPress);
+        window.addEventListener("keydown", this.handleKeyPress);
     };
 
-    bindEvents();
+    init = function() {
+        this.canvas = document.getElementById('game-canvas');
+        bindEvents();
+        initGL();
+        var gl = this.gl;
+
+        var gb = new GameBoard(gl, this.canvas);
+        gb.init();
+
+        gl.viewportWidth = this.canvas.width = gb.width;
+        gl.viewportHeight = this.canvas.height = gb.height;
+        gl.clearColor(0.0, 0.0, 0.0, 0.5);
+        gl.enable(gl.DEPTH_TEST);
+
+        drawScene();
+    };
+
+    initGL = function() {
+        try {
+            this.gl = this.canvas.getContext("webgl") || this.canvas.getContext("experimental-webgl");
+        } catch (e) {console.log(e);}
+        // TODO: Make this a nice modal or something
+        if (!this.gl) {
+          alert("This page requires a WebGL capable web browser.");
+        }
+    };
+
+    function drawScene() {
+        var gl = this.gl;
+
+        gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    }
+
+    window.onload = init;
 
 })();
