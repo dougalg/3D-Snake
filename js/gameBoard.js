@@ -1,7 +1,6 @@
-var GameBoard = function(gl, canvas, options) {
+var GameBoard = function(GL, options) {
     options = options || {};
-    this.gl = gl;
-    this.canvas = canvas;
+    this.GL = GL;
     this.size = options.size || 10;                 // Size in squares (board is an X by X by X cube)
     this.unitSize = options.unitSize || 50;         // Size of a square in pixels
     this.cubes = [];            // Cubes Size[Size[size[]*]*]
@@ -25,7 +24,7 @@ GameBoard.prototype.initCubes = function() {
                 options.x = x;
                 options.y = y;
                 options.z = z;
-                zCubes[z] = new Cube(this.gl, this.canvas, options);
+                zCubes[z] = new Cube(this.GL, options);
             }
             yCubes[y] = zCubes;
         }

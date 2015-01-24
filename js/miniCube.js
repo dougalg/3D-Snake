@@ -1,20 +1,16 @@
-var Cube = function(gl, canvas, options) {
+var Cube = function(GL, options) {
     options = options || {};
 
-    this.gl = gl;
-    this.canvas = canvas;
+    this.GL = GL;
+    this.gl = GL.gl;
+    this.canvas = GL.canvas;
 
     this.sideLength = options.sideLength;
     this.x = options.x * this.sideLength;
     this.y = options.y * this.sideLength;
     this.z = options.z * this.sideLength;
 
-    this.initShaders();
     this.initBuffer();
-};
-
-Cube.prototype.initShaders = function() {
-
 };
 
 Cube.prototype.initBuffer = function() {

@@ -1,6 +1,6 @@
 (function(){
 
-    var gl, canvas, shaderProgram;
+    var gl, canvas;
 
     press = function(direction) {
         gb.rotate(direction);
@@ -35,38 +35,20 @@
     };
 
     init = function() {
-        this.canvas = document.getElementById('game-canvas');
         bindEvents();
-        initGL();
-        var gl = this.gl;
+        this.GL = new WebGL({canvas: 'game-canvas'});
+        var gl = this.GL.gl;
 
-        var gb = new GameBoard(gl, this.canvas);
+        var gb = new GameBoard(GL);
         gb.init();
 
-        gl.viewportWidth = this.canvas.width = gb.width;
-        gl.viewportHeight = this.canvas.height = gb.height;
+        gl.viewportWidth = this.GL.canvas.width = gb.width;
+        gl.viewportHeight = this.GL.canvas.height = gb.height;
         gl.clearColor(0.0, 0.0, 0.0, 0.5);
         gl.enable(gl.DEPTH_TEST);
 
-        drawScene();
+        this.GL.drawScene();
     };
-
-    initGL = function() {
-        try {
-            this.gl = this.canvas.getContext("webgl") || this.canvas.getContext("experimental-webgl");
-        } catch (e) {console.log(e);}
-        // TODO: Make this a nice modal or something
-        if (!this.gl) {
-          alert("This page requires a WebGL capable web browser.");
-        }
-    };
-
-    function drawScene() {
-        var gl = this.gl;
-
-        gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    }
 
     window.onload = init;
 
