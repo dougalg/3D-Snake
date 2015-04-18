@@ -1,55 +1,104 @@
 (function(){
 
-    var gl, canvas;
-
-    press = function(direction) {
-        gb.rotate(direction);
-    };
-
-    handleKeyPress = function(e) {
-        var code = e.keyCode,
-            val;
-        switch (code) {
-            case 38: // Up arrow
-                e.preventDefault();
-                this.press('up');
-                return;
-            case 37: // Left arrow
-                e.preventDefault();
-                this.press('left');
-                return;
-            case 39: // Right arrow
-                e.preventDefault();
-                this.press('right');
-                return;
-            case 40: // Down arrow
-                e.preventDefault();
-                this.press('down');
-                return;
-        }
-
-    };
-
-    bindEvents = function() {
-        window.addEventListener("keydown", this.handleKeyPress);
-    };
+    var scene, camera, controls, renderer, target,
+        keys = { 
+            DOWN: 83, /* S */
+            UP: 87, /* W */
+            LEFT: 65, /* A */
+            RIGHT: 68, /* D */
+        };
 
     init = function() {
-        bindEvents();
-        this.GL = new WebGL({canvas: 'game-canvas'});
-        var gl = this.GL.gl;
+        var w, h = w = 800;
 
-        var gb = new GameBoard(GL);
-        gb.init();
+        target = new THREE.Vector3();
 
-        gl.viewportWidth = this.GL.canvas.width = gb.width;
-        gl.viewportHeight = this.GL.canvas.height = gb.height;
-        gl.clearColor(0.0, 0.0, 0.0, 0.5);
-        gl.enable(gl.DEPTH_TEST);
+        var canvas = document.getElementById('game-canvas');
+        canvas.height = h;
+        canvas.width = w;
 
-        this.GL.drawScene();
+        scene = new THREE.Scene();
+        var lights = [];
+        lights[0] = new THREE.PointLight( 0xffffff, 1, 0 );
+        lights[1] = new THREE.PointLight( 0xffffff, 1, 0 );
+        lights[2] = new THREE.PointLight( 0xffffff, 1, 0 );
+        
+        lights[0].position.set( 0, 200, 0 );
+        lights[1].position.set( 100, 200, 100 );
+        lights[2].position.set( -100, -200, -100 );
+
+        scene.add( lights[0] );
+        scene.add( lights[1] );
+        scene.add( lights[2] );
+
+        camera = new THREE.PerspectiveCamera( 75, w / h, 0.1, 1000 );
+
+        controls = new THREE.TrackballControls( camera );
+        controls.rotateSpeed = 1.0;
+        controls.zoomSpeed = 1.2;
+        controls.panSpeed = 0.8;
+
+        controls.noZoom = false;
+        controls.noPan = false;
+
+        controls.staticMoving = true;
+        controls.dynamicDampingFactor = 0.3;
+
+        controls.keys = [ 65, 83, 68 ];
+
+        controls.addEventListener( 'change', render );
+
+        camera.position.z = 20;
+        camera.lookAt(scene.position);
+        target.copy(scene.rotation);
+
+
+        renderer = new THREE.WebGLRenderer({
+            alpha: true,
+            canvas: canvas
+        });
+        renderer.setClearColor( 0xffffff, 1);
+
+        var cubes = [];
+        var num = 15;
+        var med = (num/2)-0.5;
+        var egh, cube, geometry, material;
+        for (var x = 0; x < num; x++) {
+            cubes[x] = [];
+            for (var y = 0; y < num; y++) {
+                cubes[x][y] = [];
+                for (var z = 0; z < num; z++) {
+                    geometry = new THREE.BoxGeometry( 1, 1, 1 );
+                    material = new THREE.MeshFaceMaterial({ color: 0x0000FF, transparent: true, alpha: 0.1, wireframe: true });
+                    cube = new THREE.Mesh( geometry, material );
+                    egh = new THREE.EdgesHelper( cube, 0x00ffff );
+                    cubes[x][y][z] = egh;
+                    egh.position.x = x - med;
+                    egh.position.y = y - med;
+                    egh.position.z = z - med;
+                    egh.updateMatrix();
+                    egh.material.linewidth = 1;
+                    scene.add( egh );
+                }
+            }
+        }
+
+        // window.addEventListener( 'keydown', keydown, false );
     };
 
-    window.onload = init;
+    function animate() {
+        requestAnimationFrame( animate );
+        controls.update();
+    }
+
+    function render() {
+        // setRotation();
+        renderer.render( scene, camera );
+    }
+
+    window.onload = function() {
+        init();
+        animate();
+    };
 
 })();
