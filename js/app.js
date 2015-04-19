@@ -33,7 +33,7 @@
 
         camera = new THREE.PerspectiveCamera( 75, w / h, 0.1, 1000 );
 
-        controls = new THREE.TrackballControls( camera );
+        controls = new THREE.DougalControls( camera );
         controls.rotateSpeed = 1.0;
         controls.zoomSpeed = 1.2;
         controls.panSpeed = 0.8;
@@ -60,7 +60,7 @@
         renderer.setClearColor( 0xffffff, 1);
 
         var cubes = [];
-        var num = 15;
+        var num = 8;
         var med = (num/2)-0.5;
         var egh, cube, geometry, material;
         for (var x = 0; x < num; x++) {
