@@ -5,7 +5,7 @@
 
 THREE.DougalControls = function ( object, domElement ) {
 
-    var animationDuration = 1; // # of s over which a rotation should animate
+    var animationDuration = 0.5; // # of s over which a rotation should animate
 
     var clock = new THREE.Clock();
     var target = new THREE.Quaternion();
@@ -39,6 +39,7 @@ THREE.DougalControls = function ( object, domElement ) {
             var y = 0; // Rotate y axis?
             var op = 1;// Rotate forwards or backwards +/-?
             var temp = new THREE.Quaternion();
+            var temp2 = new THREE.Quaternion();
 
             // Check if we actually want that rotation, override if necessary
             if (kc === KEYS.right || kc === KEYS.left) {
@@ -53,7 +54,13 @@ THREE.DougalControls = function ( object, domElement ) {
             // Update the quaternion to rotate 90 degrees
             temp.setFromAxisAngle( new THREE.Vector3( x, y, 0 ), op * (Math.PI / 2) );
 
-            target.multiply( temp );
+            // Interestingly target.multiply(temp) is compounded rotations,
+            // whereas this actually achieves the desired effect
+            // 
+            // see: http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/transforms/
+            temp.multiply( target );
+            target.copy(temp);
+            // target.multiply(temp); // <-- Old non-working version
         }
 
     }

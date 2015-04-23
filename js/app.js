@@ -61,7 +61,7 @@
         renderer.setClearColor( 0xffffff, 1);
 
         var cubes = [];
-        var num = 8;
+        var num = 12;
         var med = (num/2)-0.5;
         var egh, cube, geometry, material;
         for (var x = 0; x < num; x++) {
