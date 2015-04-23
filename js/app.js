@@ -18,6 +18,7 @@
         canvas.width = w;
 
         scene = new THREE.Scene();
+        console.log(scene);
         var lights = [];
         lights[0] = new THREE.PointLight( 0xffffff, 1, 0 );
         lights[1] = new THREE.PointLight( 0xffffff, 1, 0 );
@@ -33,7 +34,7 @@
 
         camera = new THREE.PerspectiveCamera( 75, w / h, 0.1, 1000 );
 
-        controls = new THREE.DougalControls( camera );
+        controls = new THREE.DougalControls( scene );
         controls.rotateSpeed = 1.0;
         controls.zoomSpeed = 1.2;
         controls.panSpeed = 0.8;
@@ -92,7 +93,6 @@
     }
 
     function render() {
-        // setRotation();
         renderer.render( scene, camera );
     }
 

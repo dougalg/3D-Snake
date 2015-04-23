@@ -5,7 +5,7 @@
 
 THREE.DougalControls = function ( object, domElement ) {
 
-    var animationDuration = 1000; // # of ms over which a rotation should animate
+    var animationDuration = 1; // # of s over which a rotation should animate
 
     var clock = new THREE.Clock();
     var target = new THREE.Quaternion();
@@ -30,7 +30,7 @@ THREE.DougalControls = function ( object, domElement ) {
         var kc = event.keyCode;
         
         // If we are not already rotating on this axis, continue
-        if (!rotationCtrls[kc]) {
+        if (event.keyCode in rotationCtrls && rotationCtrls[kc] === false) {
             // Set the timeToDie
             rotationCtrls[kc] = animationDuration;
 
@@ -45,13 +45,13 @@ THREE.DougalControls = function ( object, domElement ) {
                 x = 0;
                 y = 1;
             }
-            if (kc === KEYS.down || kc === KEYS.left) {
+            if (kc === KEYS.up || kc === KEYS.left) {
                 // is the rotation positive or negative
                 op = -1;
             }
 
             // Update the quaternion to rotate 90 degrees
-            temp.setFromAxisAngle( new THREE.Vector3( x, y, 0 ), op * (Math.PI / 4) );
+            temp.setFromAxisAngle( new THREE.Vector3( x, y, 0 ), op * (Math.PI / 2) );
 
             target.multiply( temp );
         }
@@ -64,20 +64,24 @@ THREE.DougalControls = function ( object, domElement ) {
         var delta = clock.getDelta();
 
         for (var key in KEYS) {
-            if (KEYS.hasOwnProperty(key)) {
-                var kc = KEYS[key];
-                var elapsedTime = rotationCtrls[kc] - delta;
-                var t = (delta / animationDuration) + elapsedTime;
+            var kc = KEYS[key];
+            if (KEYS.hasOwnProperty(key) && rotationCtrls[kc] !== false) {
+                
+                // First calculate how far we are between total remaining time, and target
+                var t = delta / rotationCtrls[kc];
 
-                if (rotationCtrls[kc] <= 0) {
-                    rotationCtrls[kc] = false;
-                }
+                // Update remaining time, based on current change
+                var remainingTime = rotationCtrls[kc] -= delta;
 
                 object.quaternion.slerp(target, t);
+                if (remainingTime <= 0) {
+                    rotationCtrls[kc] = false;
+                    object.quaternion.slerp(target, 1);
+                }
             }
         }
-
-        this.dispatchEvent( 'change' );
+        this.dispatchEvent( { type: 'start' } );
+        this.dispatchEvent( { type: 'change' } );
     };
 
     window.addEventListener( 'keydown', keydown, false );
