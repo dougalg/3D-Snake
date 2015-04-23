@@ -35,24 +35,12 @@
         camera = new THREE.PerspectiveCamera( 75, w / h, 0.1, 1000 );
 
         controls = new THREE.DougalControls( scene );
-        controls.rotateSpeed = 1.0;
-        controls.zoomSpeed = 1.2;
-        controls.panSpeed = 0.8;
-
-        controls.noZoom = false;
-        controls.noPan = false;
-
-        controls.staticMoving = true;
-        controls.dynamicDampingFactor = 0.3;
-
-        controls.keys = [ 65, 83, 68 ];
-
+        controls.animationDuration = 0.3;
         controls.addEventListener( 'change', render );
 
-        camera.position.z = 20;
+        camera.position.z = 12;
         camera.lookAt(scene.position);
         target.copy(scene.rotation);
-
 
         renderer = new THREE.WebGLRenderer({
             alpha: true,
@@ -61,7 +49,7 @@
         renderer.setClearColor( 0xffffff, 1);
 
         var cubes = [];
-        var num = 12;
+        var num = 9;
         var med = (num/2)-0.5;
         var egh, cube, geometry, material;
         for (var x = 0; x < num; x++) {

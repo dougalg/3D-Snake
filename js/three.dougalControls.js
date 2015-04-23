@@ -5,7 +5,7 @@
 
 THREE.DougalControls = function ( object, domElement ) {
 
-    var animationDuration = 0.5; // # of s over which a rotation should animate
+    this.animationDuration = 0.5; // # of s over which a rotation should animate
 
     var clock = new THREE.Clock();
     var target = new THREE.Quaternion();
@@ -32,7 +32,7 @@ THREE.DougalControls = function ( object, domElement ) {
         // If we are not already rotating on this axis, continue
         if (event.keyCode in rotationCtrls && rotationCtrls[kc] === false) {
             // Set the timeToDie
-            rotationCtrls[kc] = animationDuration;
+            rotationCtrls[kc] = this.animationDuration;
 
             // Default to forward rotation around x axis
             var x = 1; // Rotate x axis?
@@ -92,7 +92,7 @@ THREE.DougalControls = function ( object, domElement ) {
         this.dispatchEvent( { type: 'change' } );
     };
 
-    window.addEventListener( 'keydown', keydown, false );
+    window.addEventListener( 'keydown', keydown.bind(this), false );
 
     // force an update at start
     this.update();
