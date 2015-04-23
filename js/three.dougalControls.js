@@ -56,6 +56,7 @@ THREE.DougalControls = function ( object, domElement ) {
 
             // Interestingly target.multiply(temp) is compounded rotations,
             // whereas this actually achieves the desired effect
+            // This is because multiplication of Quaternions is NOT commutative :(
             // 
             // see: http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/transforms/
             temp.multiply( target );
