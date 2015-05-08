@@ -1,0 +1,27 @@
+* {
+    box-sizing: border-box;
+}
+
+#container {
+    display: block;
+    position: absolute;
+}
+
+#viewport {
+
+}
+
+#gameBoard {
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    -webkit-transform: rotateX(0deg) rotateY(0deg);
+    -moz-transform: rotateX(0deg) rotateY(0deg);
+}
+
+.miniCube {
+    position: absolute;
+    display: inline-block;
+    border: 1px solid #000;
+    opacity: 0.2;
+    background-color: #efefef;
+}
