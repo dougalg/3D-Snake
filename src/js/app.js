@@ -8,7 +8,7 @@ var main = function() {
     
     'use strict';
 
-    var scene, camera, controls, renderer, target,
+    var scene, camera, controls, renderer, target, snake,
         keys = {
             DOWN: 83, /* S */
             UP: 87, /* W */
@@ -47,7 +47,7 @@ var main = function() {
         controls.animationDuration = 0.8;
         controls.addEventListener( 'change', render );
 
-        camera.position.z = 12;
+        camera.position.z = 18;
         camera.lookAt(scene.position);
         target.copy(scene.rotation);
 
@@ -57,10 +57,10 @@ var main = function() {
         });
         renderer.setClearColor( 0xffffff, 1);
 
-        var cubes = new CubeRenderer(9, scene)
+        var cubes = new CubeRenderer(12, scene)
             .render();
 
-        var snake = new Snake(cubes, scene)
+        snake = new Snake(cubes, scene)
             .spawn({length: 3});
 
         cubes.render();
@@ -71,6 +71,7 @@ var main = function() {
     function animate() {
         requestAnimationFrame( animate );
         controls.update();
+        snake.move();
     }
 
     function render() {

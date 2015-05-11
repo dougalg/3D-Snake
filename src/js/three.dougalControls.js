@@ -74,18 +74,9 @@ THREE.DougalControls = function ( object, domElement ) {
         for (var key in KEYS) {
             var kc = KEYS[key];
             if (this.remainingTime > 0) {
-                
-                // First calculate how far we are between total remaining time, and target
-                var t = delta / this.remainingTime;
-
-                // Update remaining time, based on current change
-                this.remainingTime -= delta;
-
-                object.quaternion.slerp(target, t);
-                if (this.remainingTime <= 0) {
-                    this.remainingTime = 0;
-                    object.quaternion.slerp(target, 1);
-                }
+                var t = Math.min(delta, this.remainingTime);
+                object.quaternion.slerp(target, t/this.remainingTime);
+                this.remainingTime -= t;
             }
         }
         this.dispatchEvent( { type: 'start' } );
