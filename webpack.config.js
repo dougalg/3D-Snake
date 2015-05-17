@@ -6,13 +6,13 @@ module.exports = {
         filename: "app.js"
     },
     resolve: {
-        extensions: [ ".js", ".css", "" ],
+        extensions: [ ".js", ".scss", "" ],
         modulesDirectories: [ "bower_components", "node_modules" ]
     },
     devtool: "source-map",
     module: {
         loaders: [
-            { test: /\.css$/, loader: "style-loader!css-loader" },
+            { test: /\.scss$/, loader: "style-loader!css-loader!sass-loader" },
             { test: /src\/js\/.*\.js$/, loader: "babel-loader" },
             { test: /threejs\/build\/three/, loader: "exports-loader", query: "THREE=THREE" }
         ]

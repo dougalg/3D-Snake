@@ -1,11 +1,25 @@
 <html lang="en">
     <head>
-        <link href="css/styles.css" rel="stylesheet"></link>
     </head>
     <body>
         <canvas id="game-canvas">
             This page requires a WebGL capable web browser.
         </canvas>
+        <div class="info">
+            <button id="resetButton">Restart</button>
+            <h1>Controls</h1>
+            <dl>
+                <dt>Camera</dt> <dd>arrows</dd>
+                <dt>Snake</dt> <dd>wasd</dd>
+            </dl>
+        </div>
+        <div class="background hideable">
+        </div>
+        <div class="container hideable">
+            <div class="start-screen">
+                <button id="startButton">Start</button>
+            </div>
+        </div>
         <script src="../dist/app.js"></script>
     </body>
 </html>

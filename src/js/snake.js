@@ -1,6 +1,17 @@
 var THREE = require('threejs/build/three');
 
-var Snake = function(space, scene) {
+function getRandom(max) {
+    return Math.floor(Math.random() * max);
+}
+
+/**
+ * @class Snake - A snake game's snake, a collection of squares
+ *
+ * @param  {Array} space A collection of cubes from CubeRenderer
+ * @param  {THREE.scene} scene description
+ * @return {type}       description
+ */
+var Snake = function (space, scene) {
     this.space = space;
     this.spaceSize = space.width;
     this.length = 0;
@@ -11,22 +22,26 @@ var Snake = function(space, scene) {
         axis: 'x',
         distance: 1
     };
-    this.moveSpeed = 0.3; // units per second
+    this.moveSpeed = 0.2; // units per second
 
     return this;
 };
 
 module.exports = Snake;
 
+/**
+ * Snake.prototype.spawn - Spawns the snake in the center of the boar
+ *
+ * @param  {Object} options
+ * @return {Snake}
+ */
 Snake.prototype.spawn = function(options) {
     // Spawn a snake at a random location
     this.length = options.length;
-    var w = this.spaceSize;
 
-    var med = this.space.offset;
+    var pos = (this.space.width % 2) ? 0 : 0.5;
+    this.populate(pos, pos, pos);
 
-    this.populate(getRandom(w)-med, getRandom(w)-med, getRandom(w)-med);
-    
     this.segments[0].target.position.x += 1;
 
     this.setDirection();
@@ -38,6 +53,19 @@ Snake.prototype.setDirection = function(newDirection) {
     // this.direction = newDirection;
 };
 
+Snake.prototype.clear = function() {
+    for (let segment of this.segments) {
+        this.scene.remove(segment.current);
+    }
+    this.segments = [];
+}
+
+/**
+ * Snake.prototype.move - incrementally moves the snake's blocks to their next
+ * positions
+ *
+ * @return {Snake}
+ */
 Snake.prototype.move = function() {
     this.addNewBlocks();
     // Move each block
@@ -54,8 +82,12 @@ Snake.prototype.move = function() {
     if (allFinished) {
         this.setUpNextMove();
     }
+    return this;
 };
 
+/**
+ * Snake.prototype.addNewBlocks - Adds new blocks to the Snake at the end
+ */
 Snake.prototype.addNewBlocks = function() {
     // Check length and add new block if necessary
     if (!this.blockAdded && this.segments.length < this.length & this.segments.length > 0) {
@@ -65,7 +97,11 @@ Snake.prototype.addNewBlocks = function() {
     }
 };
 
-Snake.prototype.setUpNextMove = function () {
+
+/**
+ * Snake.prototype.setUpNextMove - sets new targets for all Snake pieces
+ */
+Snake.prototype.setUpNextMove = function() {
     this.blockAdded = false;
     var dir = this.direction;
     this.segments.forEach(function(segment, index){
@@ -79,6 +115,14 @@ Snake.prototype.setUpNextMove = function () {
     }.bind(this));
 };
 
+/**
+ * Snake.prototype.get - returns a cube from a location
+ *
+ * @param  {Number} x
+ * @param  {Number} y
+ * @param  {Number} z
+ * @return {Snake}
+ */
 Snake.prototype.populate = function(x, y, z) {
     // Put a new, smaller box in the cube
     var geometry = new THREE.BoxGeometry( 1, 1, 1 );
@@ -98,7 +142,3 @@ Snake.prototype.populate = function(x, y, z) {
 
     return this;
 };
-
-function getRandom(max) {
-    return Math.floor(Math.random() * max);
-}
