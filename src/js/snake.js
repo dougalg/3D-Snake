@@ -29,6 +29,9 @@ var Snake = function (space, scene) {
 
 module.exports = Snake;
 
+Snake.prototype = Object.create( THREE.EventDispatcher.prototype );
+Snake.prototype.constructor = Snake;
+
 /**
  * Snake.prototype.spawn - Spawns the snake in the center of the boar
  *
@@ -104,7 +107,7 @@ Snake.prototype.addNewBlocks = function() {
 Snake.prototype.setUpNextMove = function() {
     this.blockAdded = false;
     var dir = this.direction;
-    this.segments.forEach(function(segment, index){
+    this.segments.every((segment, index) => {
         if (index > 0) {
             segment.target.position.copy(this.segments[index-1].current.position);
         }
@@ -112,6 +115,7 @@ Snake.prototype.setUpNextMove = function() {
             segment.target.position[dir.axis] += dir.distance;
         }
         segment.remainingTime = this.moveSpeed;
+        return !this.outOfBounds(segment.target.position);
     }.bind(this));
 };
 
@@ -141,4 +145,22 @@ Snake.prototype.populate = function(x, y, z) {
     this.scene.add(cube);
 
     return this;
+};
+
+/**
+ * Snake.prototype.outOfBounds - If the snake is out of bands returns true and
+ * fires an edgeCollision event
+ *
+ * @param  {THREE.Vector3} target A vector position
+ * @return {Boolean}
+ */
+Snake.prototype.outOfBounds = function(target) {
+    for (let axis of ['x', 'y', 'z']) {
+        var val = target[axis] + Math.floor(this.spaceSize/2);
+        if (val < 0 || val > this.spaceSize) {
+            this.dispatchEvent( {type: "edgeCollision"} );
+            return true;
+        }
+    }
+    return false;
 };

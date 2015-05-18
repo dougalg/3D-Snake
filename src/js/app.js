@@ -34,7 +34,6 @@ var main = function() {
 
         controls = new THREE.DougalControls( scene );
         controls.animationDuration = 0.8;
-        controls.addEventListener( 'change', render );
 
         renderer = new THREE.WebGLRenderer({
             alpha: true,
@@ -52,6 +51,12 @@ var main = function() {
     function addListeners () {
         document.getElementById("startButton").addEventListener("click", startGame);
         document.getElementById("resetButton").addEventListener("click", resetGame);
+        controls.addEventListener( 'change', render );
+        snake.addEventListener( 'edgeCollision', endGame );
+    }
+
+    function endGame () {
+        resetGame();
     }
 
     function startGame (e) {
