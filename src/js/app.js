@@ -3,18 +3,13 @@ var THREE = require('threejs/build/three');
 require('./three.dougalControls');
 var CubeRenderer = require('./cubeRenderer');
 var Snake = require('./snake');
+var SnakeControls = require('./snakeControls');
 
 var main = function() {
 
     'use strict';
 
-    var scene, camera, controls, renderer, snake, cubes;
-    const keys = {
-        DOWN: 83,  /* S */
-        UP: 87,    /* W */
-        LEFT: 65,  /* A */
-        RIGHT: 68, /* D */
-    };
+    var scene, camera, controls, snakeControls, renderer, snake, cubes;
 
     var init = function() {
         var w, h;
@@ -44,6 +39,8 @@ var main = function() {
         cubes = new CubeRenderer(12, scene)
             .render();
         snake = new Snake(cubes, scene);
+        snakeControls = new SnakeControls(snake, scene);
+        setRotatedAxes();
 
         addListeners();
     };
@@ -51,8 +48,13 @@ var main = function() {
     function addListeners () {
         document.getElementById("startButton").addEventListener("click", startGame);
         document.getElementById("resetButton").addEventListener("click", resetGame);
-        controls.addEventListener( 'change', render );
-        snake.addEventListener( 'edgeCollision', endGame );
+        snake.addEventListener( "edgeCollision", endGame );
+        controls.addEventListener( "rotated", setRotatedAxes );
+        controls.addEventListener( "change", render );
+    }
+
+    function setRotatedAxes () {
+        snakeControls.setRotatedAxes(scene.quaternion.clone().inverse());
     }
 
     function endGame () {

@@ -18,11 +18,7 @@ var Snake = function (space, scene) {
     this.scene = scene;
     this.segments = [];
     this.clock = new THREE.Clock();
-    this.direction = {
-        axis: 'x',
-        distance: 1
-    };
-    this.moveSpeed = 0.2; // units per second
+    this.moveSpeed = 0.12; // units per second
 
     return this;
 };
@@ -47,13 +43,28 @@ Snake.prototype.spawn = function(options) {
 
     this.segments[0].target.position.x += 1;
 
-    this.setDirection();
+    this.setDirection('x', 1);
 
     return this;
 };
 
-Snake.prototype.setDirection = function(newDirection) {
-    // this.direction = newDirection;
+
+/**
+ * Snake.prototype.setDirection - Sets a new direction for the snake
+ *
+ * @param  {String} axis     x, y, z
+ * @param  {Integer} distance 1 or -1
+ * @return {Snake}
+ */
+Snake.prototype.setDirection = function(axis, distance) {
+    // TODO: Ensure there is no attempt to move the snake back onto itself
+
+    this.direction = {
+        axis: axis,
+        distance: distance
+    };
+
+    return this;
 };
 
 Snake.prototype.clear = function() {
