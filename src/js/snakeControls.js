@@ -47,7 +47,6 @@ SnakeControls.prototype.setRotatedAxes = function(quaternion) {
     for (let axis in axes) {
         axes[axis].applyQuaternion(quaternion).normalize();
         axes[axis] = this.getRotatedAxis(axes[axis]);
-        // axes[axis].mult = (axis === axes[axis].axis ? axes[axis].mult : axes[axis].mult * -1);
     }
     this.axes = axes;
     console.log('rotating axes', this.axes);
@@ -74,27 +73,18 @@ SnakeControls.prototype.keydown = function( event ) {
 
         let axis, distance;
 
-        if (kc === keys.DOWN) {
-            axis = this.axes.y.axis;
-            distance = -1 * this.axes.y.mult;
-        }
-
-        if (kc === keys.UP) {
+        if (kc === keys.DOWN || kc === keys.UP) {
             axis = this.axes.y.axis;
             distance = this.axes.y.mult;
         }
-
-        if (kc === keys.LEFT) {
-            axis = this.axes.x.axis;
-            distance = -1 * this.axes.x.mult;
-        }
-
-        if (kc === keys.RIGHT) {
+        else {
             axis = this.axes.x.axis;
             distance = this.axes.x.mult;
         }
 
-        console.log('axis: '+ axis, 'distance: '+ distance);
+        if (kc === keys.DOWN || kc === keys.LEFT) {
+            distance = -1 * distance;
+        }
 
         this.snake.setDirection(axis, distance);
 
