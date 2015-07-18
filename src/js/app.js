@@ -14,6 +14,7 @@ var main = function() {
     var init = function() {
         var w, h;
         h = w = 800;
+        var boxWidth = 15;
 
         var canvas = document.getElementById('game-canvas');
         canvas.height = h;
@@ -24,7 +25,7 @@ var main = function() {
         initLights(scene);
         camera = new THREE.PerspectiveCamera( 75, w / h, 0.1, 1000 );
 
-        camera.position.z = 18;
+        camera.position.z = boxWidth + boxWidth/4;
         camera.lookAt(scene.position);
 
         controls = new THREE.DougalControls( scene );
@@ -36,8 +37,7 @@ var main = function() {
         });
         renderer.setClearColor( 0xffffff, 1);
 
-        cubes = new CubeRenderer(12, scene)
-            .render();
+        cubes = new CubeRenderer(boxWidth, scene).render();
         snake = new Snake(cubes, scene);
         snakeControls = new SnakeControls(snake, scene);
         setRotatedAxes();

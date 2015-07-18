@@ -8,10 +8,10 @@ const keys = {
 };
 
 var controlKeys = {
-    83:true,
-    87:true,
-    65:true,
-    68:true
+    83: true,
+    87: true,
+    65: true,
+    68: true
 };
 
 var SnakeControls = function(snake, scene) {
@@ -49,7 +49,6 @@ SnakeControls.prototype.setRotatedAxes = function(quaternion) {
         axes[axis] = this.getRotatedAxis(axes[axis]);
     }
     this.axes = axes;
-    console.log('rotating axes', this.axes);
 };
 
 SnakeControls.prototype.getRotatedAxis = function (vector) {

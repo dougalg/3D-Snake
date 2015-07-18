@@ -19,6 +19,12 @@ var Snake = function (space, scene) {
     this.segments = [];
     this.clock = new THREE.Clock();
     this.moveSpeed = 0.12; // units per second
+    this.tempCubes = {};
+    this.futureDirection = {};
+    this.currentDirection = {
+        axis: 'y',
+        direction: -1
+    }
 
     return this;
 };
@@ -29,7 +35,7 @@ Snake.prototype = Object.create( THREE.EventDispatcher.prototype );
 Snake.prototype.constructor = Snake;
 
 /**
- * Snake.prototype.spawn - Spawns the snake in the center of the boar
+ * Snake.prototype.spawn - Spawns the snake in the center of the board
  *
  * @param  {Object} options
  * @return {Snake}
@@ -59,13 +65,20 @@ Snake.prototype.spawn = function(options) {
 Snake.prototype.setDirection = function(axis, distance) {
     // TODO: Ensure there is no attempt to move the snake back onto itself
 
-    this.direction = {
+    var tmp = {
         axis: axis,
         distance: distance
     };
+    if (!this.isInverseDirection(this.currentDirection, tmp)) {
+        this.futureDirection = tmp;
+    }
 
     return this;
 };
+
+Snake.prototype.isInverseDirection = function(a, b) {
+    return a.axis === b.axis && a.distance === -1 * b.distance
+}
 
 Snake.prototype.clear = function() {
     for (let segment of this.segments) {
@@ -116,19 +129,70 @@ Snake.prototype.addNewBlocks = function() {
  * Snake.prototype.setUpNextMove - sets new targets for all Snake pieces
  */
 Snake.prototype.setUpNextMove = function() {
+    this.removeTempCubes();
     this.blockAdded = false;
-    var dir = this.direction;
+    var isTurn = this.futureDirection != this.currentDirection;
+    var dir = this.currentDirection = this.futureDirection;
     this.segments.every((segment, index) => {
         if (index > 0) {
-            segment.target.position.copy(this.segments[index-1].current.position);
+            // If the snake is turning here, add a temporary block to smooth animations
+            let tp = segment.target.position;
+            let fp = this.segments[index-1].current.position;
+            // Follow the block in front
+            segment.target.position.copy(fp);
         }
         else {
+            // Follow the keyed direction
             segment.target.position[dir.axis] += dir.distance;
+            if (isTurn) {
+                this.addTempCube.apply(this, segment.current.position.toArray());
+            }
         }
         segment.remainingTime = this.moveSpeed;
         return !this.outOfBounds(segment.target.position);
     }.bind(this));
 };
+
+/**
+ * Remove any temporary cubes at the tail of the snake
+ */
+Snake.prototype.removeTempCubes = function() {
+    var w = this.segments[this.segments.length-1];
+    if (!w || !w.current) {
+        return;
+    }
+    var x = w.current.position.toArray();
+    var y = this.tempCubes[x];
+    if (!y) {
+        return;
+    }
+
+    this.scene.remove(y);
+    delete this.tempCubes[x];
+}
+
+/**
+ * Insert a temporary cube at position position
+ * @param {THREE.Vector3} position
+ */
+Snake.prototype.addTempCube = function(x, y, z) {
+    if (this.tempCubes[[x,y,z]] === undefined) {
+        var cube = this.getCubeAtPosition(x, y, z);
+        this.tempCubes[[x,y,z]] = cube;
+        this.scene.add(cube);
+    }
+}
+
+Snake.prototype.getCubeAtPosition = function(x, y ,z) {
+    var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+
+    var material = new THREE.MeshLambertMaterial({
+        color: 0x00ffff
+    });
+    var cube = new THREE.Mesh( geometry, material );
+    cube.position.set(x, y, z);
+    return cube;
+}
 
 /**
  * Snake.prototype.get - returns a cube from a location
@@ -140,13 +204,7 @@ Snake.prototype.setUpNextMove = function() {
  */
 Snake.prototype.populate = function(x, y, z) {
     // Put a new, smaller box in the cube
-    var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-
-    var material = new THREE.MeshLambertMaterial({
-        color: 0x00ffff
-    });
-    var cube = new THREE.Mesh( geometry, material );
-    cube.position.set(x, y, z);
+    var cube = this.getCubeAtPosition(z, y, z)
 
     this.segments.push({
         current: cube,
