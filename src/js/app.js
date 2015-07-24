@@ -4,6 +4,7 @@ require('./three.dougalControls');
 var CubeRenderer = require('./cubeRenderer');
 var Snake = require('./snake');
 var SnakeControls = require('./snakeControls');
+const FOOD_COLOR = 0x0000ff;
 
 var main = function() {
 
@@ -82,7 +83,7 @@ var main = function() {
         var geometry = new THREE.BoxGeometry( 1, 1, 1 );
 
         var material = new THREE.MeshLambertMaterial({
-            color: 0x0000ff
+            color: FOOD_COLOR
         });
         food = new THREE.Mesh( geometry, material );
         food.position.set( Math.floor(Math.random() * w) + min, Math.floor(Math.random() * w ) + min, Math.floor(Math.random() * w) + min );
@@ -99,6 +100,7 @@ var main = function() {
             scene.remove(food);
             spawnFood();
         }
+        cubes.updateRowColor(options.position);
     }
 
     function resetGame (e) {

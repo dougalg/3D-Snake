@@ -1,5 +1,6 @@
 var THREE = require('threejs/build/three');
 var Lazy = require('lazy.js/lazy');
+const SNAKE_COLOR = 0x00ffff;
 
 function getRandom(max) {
     return Math.floor(Math.random() * max);
@@ -211,7 +212,7 @@ Snake.prototype.getCubeAtPosition = function(x, y, z) {
     var geometry = new THREE.BoxGeometry( 1, 1, 1 );
 
     var material = new THREE.MeshLambertMaterial({
-        color: 0x00ffff
+        color: SNAKE_COLOR
     });
     var cube = new THREE.Mesh( geometry, material );
     cube.position.set(x, y, z);
