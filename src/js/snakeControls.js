@@ -1,17 +1,21 @@
 var THREE = require('threejs/build/three');
 
 const keys = {
-    DOWN: 83,  /* S */
-    UP: 87,    /* W */
-    LEFT: 65,  /* A */
-    RIGHT: 68, /* D */
+    DOWN: 83,    /* S */
+    UP: 87,      /* W */
+    LEFT: 65,    /* A */
+    RIGHT: 68,   /* D */
+    BACK: 81,    /* Q */
+    FORWARD: 69  /* E */
 };
 
 var controlKeys = {
     83: true,
     87: true,
     65: true,
-    68: true
+    68: true,
+    81: true,
+    69: true
 };
 
 var SnakeControls = function(snake, scene) {
@@ -76,12 +80,15 @@ SnakeControls.prototype.keydown = function( event ) {
             axis = this.axes.y.axis;
             distance = this.axes.y.mult;
         }
-        else {
+        else if (kc == keys.LEFT || kc === keys.RIGHT) {
             axis = this.axes.x.axis;
             distance = this.axes.x.mult;
+        } else {
+            axis = this.axes.z.axis;
+            distance = this.axes.z.mult;
         }
 
-        if (kc === keys.DOWN || kc === keys.LEFT) {
+       if (kc === keys.DOWN || kc === keys.LEFT || kc === keys.BACK) {
             distance = -1 * distance;
         }
 
