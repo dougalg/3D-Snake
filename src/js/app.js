@@ -9,7 +9,7 @@ var main = function() {
 
     'use strict';
 
-    var scene, camera, controls, snakeControls, renderer, snake, cubes;
+    var scene, camera, controls, snakeControls, renderer, snake, food, cubes;
 
     var init = function() {
         var w, h;
@@ -48,7 +48,7 @@ var main = function() {
     function addListeners () {
         document.getElementById("startButton").addEventListener("click", startGame);
         document.getElementById("resetButton").addEventListener("click", resetGame);
-        snake.addEventListener( "edgeCollision", endGame );
+        snake.addEventListener( "move", onMove );
         controls.addEventListener( "rotated", setRotatedAxes );
         controls.addEventListener( "change", render );
     }
@@ -58,24 +58,52 @@ var main = function() {
     }
 
     function endGame () {
-        resetGame();
-    }
-
-    function startGame (e) {
-        e.preventDefault();
-        var items = document.getElementsByClassName('hideable');
-        for (let el of Array.prototype.slice.call( items )) {
-            el.style.display = "none";
-        }
-        snake.spawn({ length: 3 });
-    }
-
-    function resetGame (e) {
-        snake.clear();
+        snake.stop();
         var items = document.getElementsByClassName('hideable');
         for (let el of Array.prototype.slice.call( items )) {
             el.style.display = "";
         }
+    }
+
+    function startGame (e) {
+        e.preventDefault();
+        resetGame();
+        var items = document.getElementsByClassName('hideable');
+        for (let el of Array.prototype.slice.call( items )) {
+            el.style.display = "none";
+        }
+        snake.start().spawn({ length: 3 });
+        spawnFood();
+    }
+
+    function spawnFood() {
+        var min = cubes.min;
+        var w = cubes.width;
+        var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+
+        var material = new THREE.MeshLambertMaterial({
+            color: 0x0000ff
+        });
+        food = new THREE.Mesh( geometry, material );
+        food.position.set( Math.floor(Math.random() * w) + min, Math.floor(Math.random() * w ) + min, Math.floor(Math.random() * w) + min );
+        scene.add(food);
+    }
+
+    function onMove(options) {
+        var p = options.position;
+        if (!this.space.hasCubeAt( p.toArray() )) {
+            return endGame();
+        }
+        if (food.position.equals( p )) {
+            snake.eat();
+            scene.remove(food);
+            spawnFood();
+        }
+    }
+
+    function resetGame (e) {
+        snake.clear().stop();
+        scene.remove(food);
     }
 
     function initLights(scene) {
@@ -88,9 +116,7 @@ var main = function() {
         lights[1].position.set( 100, 200, 100 );
         lights[2].position.set( -100, -200, -100 );
 
-        scene.add( lights[0] );
-        scene.add( lights[1] );
-        scene.add( lights[2] );
+        scene.add( lights[0], lights[1], lights[2] );
     }
 
     function animate() {

@@ -13,6 +13,9 @@ var CubeRenderer = function (width, scene) {
     this.scene = scene;
 
     this.offset = (this.width/2)-0.5;
+    this.odd = (this.width % 2) ? 0 : 0.5;
+    this.min = (-this.offset) + this.odd;
+    this.max = this.offset + this.odd;
 
     return this;
 };
@@ -58,6 +61,20 @@ CubeRenderer.prototype.render = function() {
 
     return this;
 };
+
+/**
+ * Given an array of [x, y, z] coordinates, determines if that is a valid member of the current space
+ * @param  {Integer[]}  position [x, y, z]
+ * @return {Boolean}
+ */
+CubeRenderer.prototype.hasCubeAt = function(position) {
+    for (let axis of position) {
+        if (axis > this.max || axis < this.min) {
+            return false
+        }
+    }
+    return true;
+}
 
 /**
  * CubeRenderer.prototype.get - returns a cube from a location

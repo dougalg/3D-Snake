@@ -1,4 +1,5 @@
 var THREE = require('threejs/build/three');
+var Lazy = require('lazy.js/lazy');
 
 function getRandom(max) {
     return Math.floor(Math.random() * max);
@@ -12,6 +13,7 @@ function getRandom(max) {
  * @return {type}       description
  */
 var Snake = function (space, scene) {
+    this.stopped = true;
     this.space = space;
     this.spaceSize = space.width;
     this.length = 0;
@@ -44,7 +46,7 @@ Snake.prototype.spawn = function(options) {
     // Spawn a snake at a random location
     this.length = options.length;
 
-    var pos = (this.space.width % 2) ? 0 : 0.5;
+    var pos = this.space.odd;
     this.populate(pos, pos, pos);
 
     this.segments[0].target.position.x += 1;
@@ -54,6 +56,15 @@ Snake.prototype.spawn = function(options) {
     return this;
 };
 
+Snake.prototype.start = function() {
+    this.stopped = false;
+    return this;
+}
+
+Snake.prototype.stop = function() {
+    this.stopped = true;
+    return this;
+}
 
 /**
  * Snake.prototype.setDirection - Sets a new direction for the snake
@@ -64,7 +75,6 @@ Snake.prototype.spawn = function(options) {
  */
 Snake.prototype.setDirection = function(axis, distance) {
     // TODO: Ensure there is no attempt to move the snake back onto itself
-
     var tmp = {
         axis: axis,
         distance: distance
@@ -81,10 +91,18 @@ Snake.prototype.isInverseDirection = function(a, b) {
 }
 
 Snake.prototype.clear = function() {
-    for (let segment of this.segments) {
-        this.scene.remove(segment.current);
-    }
+    var segs = Lazy(this.segments).map((seg) => seg.current).concat(
+        Lazy(this.tempCubes).toArray().map(([key, val]) => val )
+    );
+    this.scene.remove.apply(this.scene, segs.value());
+    this.tempCubes = {};
     this.segments = [];
+    return this;
+}
+
+Snake.prototype.eat = function() {
+    this.length += 1;
+    return this;
 }
 
 /**
@@ -94,22 +112,24 @@ Snake.prototype.clear = function() {
  * @return {Snake}
  */
 Snake.prototype.move = function() {
-    this.addNewBlocks();
-    // Move each block
-    var d = this.clock.getDelta();
-    var allFinished = true;
-    for (let segment of this.segments) {
-        if (segment.remainingTime > 0) {
-            d = Math.min(segment.remainingTime, d);
-            segment.current.position.lerp(segment.target.position, d/segment.remainingTime);
-            segment.remainingTime -= d;
-            allFinished = false;
+    if (!this.stopped) {
+        this.addNewBlocks();
+        // Move each block
+        var d = this.clock.getDelta();
+        var allFinished = true;
+        for (let segment of this.segments) {
+            if (segment.remainingTime > 0) {
+                d = Math.min(segment.remainingTime, d);
+                segment.current.position.lerp(segment.target.position, d/segment.remainingTime);
+                segment.remainingTime -= d;
+                allFinished = false;
+            }
         }
+        if (allFinished) {
+            this.setUpNextMove();
+        }
+        return this;
     }
-    if (allFinished) {
-        this.setUpNextMove();
-    }
-    return this;
 };
 
 /**
@@ -133,7 +153,7 @@ Snake.prototype.setUpNextMove = function() {
     this.blockAdded = false;
     var isTurn = this.futureDirection != this.currentDirection;
     var dir = this.currentDirection = this.futureDirection;
-    this.segments.every((segment, index) => {
+    this.segments.forEach((segment, index) => {
         if (index > 0) {
             // If the snake is turning here, add a temporary block to smooth animations
             let tp = segment.target.position;
@@ -149,8 +169,12 @@ Snake.prototype.setUpNextMove = function() {
             }
         }
         segment.remainingTime = this.moveSpeed;
-        return !this.outOfBounds(segment.target.position);
     }.bind(this));
+
+    this.dispatchEvent({
+        type: "move",
+        position: this.segments[0].target.position
+    });
 };
 
 /**
@@ -183,7 +207,7 @@ Snake.prototype.addTempCube = function(x, y, z) {
     }
 }
 
-Snake.prototype.getCubeAtPosition = function(x, y ,z) {
+Snake.prototype.getCubeAtPosition = function(x, y, z) {
     var geometry = new THREE.BoxGeometry( 1, 1, 1 );
 
     var material = new THREE.MeshLambertMaterial({
@@ -204,7 +228,7 @@ Snake.prototype.getCubeAtPosition = function(x, y ,z) {
  */
 Snake.prototype.populate = function(x, y, z) {
     // Put a new, smaller box in the cube
-    var cube = this.getCubeAtPosition(z, y, z)
+    var cube = this.getCubeAtPosition(x, y, z)
 
     this.segments.push({
         current: cube,
@@ -214,22 +238,4 @@ Snake.prototype.populate = function(x, y, z) {
     this.scene.add(cube);
 
     return this;
-};
-
-/**
- * Snake.prototype.outOfBounds - If the snake is out of bands returns true and
- * fires an edgeCollision event
- *
- * @param  {THREE.Vector3} target A vector position
- * @return {Boolean}
- */
-Snake.prototype.outOfBounds = function(target) {
-    for (let axis of ['x', 'y', 'z']) {
-        var val = target[axis] + Math.floor(this.spaceSize/2);
-        if (val < 0 || val > this.spaceSize) {
-            this.dispatchEvent( {type: "edgeCollision"} );
-            return true;
-        }
-    }
-    return false;
 };
