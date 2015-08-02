@@ -34,7 +34,8 @@ var main = function() {
 
         renderer = new THREE.WebGLRenderer({
             alpha: true,
-            canvas: canvas
+            canvas: canvas,
+            sortObjects: false
         });
         renderer.setClearColor( 0xffffff, 1);
 
@@ -92,7 +93,8 @@ var main = function() {
 
     function onMove(options) {
         var p = options.position;
-        if (!this.space.hasCubeAt( p.toArray() )) {
+        if (!this.space.hasCubeAt( p.toArray() ) ||
+            snake.isAt( p.toArray() )) {
             return endGame();
         }
         if (food.position.equals( p )) {
@@ -100,7 +102,6 @@ var main = function() {
             scene.remove(food);
             spawnFood();
         }
-        cubes.updateRowColor(options.position);
     }
 
     function resetGame (e) {

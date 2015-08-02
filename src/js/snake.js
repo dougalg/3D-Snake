@@ -28,6 +28,7 @@ var Snake = function (space, scene) {
         axis: 'y',
         direction: -1
     }
+    this.positions = {};
 
     return this;
 };
@@ -154,7 +155,9 @@ Snake.prototype.setUpNextMove = function() {
     this.blockAdded = false;
     var isTurn = this.futureDirection != this.currentDirection;
     var dir = this.currentDirection = this.futureDirection;
+    this.positions = {};
     this.segments.forEach((segment, index) => {
+        this.positions[segment.current.position.toArray()] = true;
         if (index > 0) {
             // If the snake is turning here, add a temporary block to smooth animations
             let tp = segment.target.position;
@@ -176,6 +179,10 @@ Snake.prototype.setUpNextMove = function() {
         type: "move",
         position: this.segments[0].target.position
     });
+};
+
+Snake.prototype.isAt = function(p) {
+    return !!this.positions[p];
 };
 
 /**
