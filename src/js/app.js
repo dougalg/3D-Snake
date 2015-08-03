@@ -14,7 +14,7 @@ var main = function() {
 
     'use strict';
 
-    var scene, camera, controls, snakeControls, renderer, snake, food, cubes;
+    var scene, camera, controls, snakeControls, renderer, snake, food, cubes, score, scoreEl;
 
     var init = function() {
         var w, h;
@@ -22,6 +22,8 @@ var main = function() {
         var boxWidth = 15;
 
         var canvas = document.getElementById('game-canvas');
+        scoreEl = document.getElementsByClassName('score')[0];
+
         canvas.height = h;
         canvas.width = w;
 
@@ -105,10 +107,22 @@ var main = function() {
             snake.eat();
             scene.remove(food);
             spawnFood();
+            incrementScore();
         }
     }
 
+    function incrementScore() {
+        score += 1;
+        updateScore();
+    }
+
+    function updateScore() {
+        scoreEl.innerHTML = score;
+    }
+
     function resetGame (e) {
+        score = 0;
+        updateScore();
         snake.clear().stop();
         scene.remove(food);
     }

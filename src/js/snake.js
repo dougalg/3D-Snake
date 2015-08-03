@@ -1,6 +1,7 @@
 var THREE = require('threejs/build/three');
 var Lazy = require('lazy.js/lazy');
 const SNAKE_COLOR = 0x00ffff;
+const BASE_SPEED = 0.4;
 
 /**
  * @class Snake - A snake game's snake, a collection of squares
@@ -17,7 +18,7 @@ var Snake = function (space, scene) {
     this.scene = scene;
     this.segments = [];
     this.clock = new THREE.Clock();
-    this.moveSpeed = 0.12; // units per second
+    this.moveSpeed = BASE_SPEED;
     this.tempCubes = {};
     this.futureDirection = {};
     this.currentDirection = {
@@ -64,6 +65,10 @@ Snake.prototype.stop = function() {
     return this;
 }
 
+Snake.prototype.increaseSpeed = function() {
+    this.moveSpeed = this.moveSpeed * 0.9;
+}
+
 /**
  * Snake.prototype.setDirection - Sets a new direction for the snake
  *
@@ -95,11 +100,13 @@ Snake.prototype.clear = function() {
     this.scene.remove.apply(this.scene, segs.value());
     this.tempCubes = {};
     this.segments = [];
+    this.moveSpeed = BASE_SPEED;
     return this;
 }
 
 Snake.prototype.eat = function() {
     this.length += 1;
+    this.increaseSpeed();
     return this;
 }
 

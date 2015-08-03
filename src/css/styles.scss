@@ -52,6 +52,14 @@ button {
     }
 }
 
+.score {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 3em;
+    margin: 0.2em 0.5em;
+}
+
 .start-screen {
     background-color: #fff;
 }
@@ -63,6 +71,10 @@ button {
     justify-content: center;
     margin: auto;
     text-align: center;
+
+    h1 {
+        margin-bottom: 0;
+    }
 
     button {
         font-family: "Times New Roman";
@@ -79,8 +91,11 @@ button {
             margin: 0.2em;
             display: inline-block;
         }
-        dt:after {
-            content: ': ';
+        dt {
+            text-decoration: underline;
+            &:after {
+                content: ': ';
+            }
         }
     }
   
