@@ -1,5 +1,4 @@
 var THREE = require('threejs/build/three');
-var Lazy = require('lazy.js/lazy');
 const LIGHT_BOX_COLOR = 0xeeeeee;
 const HIGHLIGHT_BOX_COLOR = 0x330000;
 

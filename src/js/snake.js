@@ -2,10 +2,6 @@ var THREE = require('threejs/build/three');
 var Lazy = require('lazy.js/lazy');
 const SNAKE_COLOR = 0x00ffff;
 
-function getRandom(max) {
-    return Math.floor(Math.random() * max);
-}
-
 /**
  * @class Snake - A snake game's snake, a collection of squares
  *
@@ -160,7 +156,6 @@ Snake.prototype.setUpNextMove = function() {
         this.positions[segment.current.position.toArray()] = true;
         if (index > 0) {
             // If the snake is turning here, add a temporary block to smooth animations
-            let tp = segment.target.position;
             let fp = this.segments[index-1].current.position;
             // Follow the block in front
             segment.target.position.copy(fp);

@@ -41,7 +41,6 @@ THREE.DougalControls = function ( object, domElement ) {
                 var y = 0; // Rotate y axis?
                 var op = 1;// Rotate forwards or backwards +/-?
                 var temp = new THREE.Quaternion();
-                var temp2 = new THREE.Quaternion();
 
                 // Check if we actually want that rotation, override if necessary
                 if (kc === KEYS.right || kc === KEYS.left) {
@@ -75,7 +74,6 @@ THREE.DougalControls = function ( object, domElement ) {
         var delta = clock.getDelta();
 
         for (let key in KEYS) {
-            var kc = KEYS[key];
             if (this.remainingTime > 0) {
                 var t = Math.min(delta, this.remainingTime);
                 object.quaternion.slerp(this.target, t/this.remainingTime);

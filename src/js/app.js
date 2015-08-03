@@ -6,6 +6,10 @@ var Snake = require('./snake');
 var SnakeControls = require('./snakeControls');
 const FOOD_COLOR = 0x0000ff;
 
+function getRand(max) {
+    return Math.floor(Math.random() * max);
+}
+
 var main = function() {
 
     'use strict';
@@ -49,7 +53,7 @@ var main = function() {
 
     function addListeners () {
         document.getElementById("startButton").addEventListener("click", startGame);
-        document.getElementById("resetButton").addEventListener("click", resetGame);
+        // document.getElementById("resetButton").addEventListener("click", resetGame);
         snake.addEventListener( "move", onMove );
         controls.addEventListener( "rotated", setRotatedAxes );
         controls.addEventListener( "change", render );
@@ -87,7 +91,7 @@ var main = function() {
             color: FOOD_COLOR
         });
         food = new THREE.Mesh( geometry, material );
-        food.position.set( Math.floor(Math.random() * w) + min, Math.floor(Math.random() * w ) + min, Math.floor(Math.random() * w) + min );
+        food.position.set( getRand(w) + min, getRand(w) + min, getRand(w) + min );
         scene.add(food);
     }
 

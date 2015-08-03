@@ -1,3 +1,4 @@
+var webpack = require('webpack');
 module.exports = {
     context: __dirname,
     entry: "./src/js/app",
@@ -16,5 +17,8 @@ module.exports = {
             { test: /src\/js\/.*\.js$/, loader: "babel-loader" },
             { test: /threejs\/build\/three/, loader: "exports-loader", query: "THREE=THREE" }
         ]
-    }
+    },
+    plugins: [
+        new webpack.optimize.UglifyJsPlugin()
+    ]
 };
