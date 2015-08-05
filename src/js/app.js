@@ -80,6 +80,11 @@ var main = function() {
         for (let el of Array.prototype.slice.call( items )) {
             el.style.display = "none";
         }
+        // Fake a right key press to start moving right
+        snakeControls.keydown({
+            keyCode: 68,
+            preventDefault: function(){}
+        });
         snake.start().spawn({ length: 3 });
         spawnFood();
     }
@@ -99,6 +104,12 @@ var main = function() {
 
     function onMove(options) {
         var p = options.position;
+        if (snake.isAt( p.toArray()) ) {
+            console.log('self destruct');
+        }
+        if (!this.space.hasCubeAt( p.toArray() )) {
+            console.log('edge');
+        }
         if (!this.space.hasCubeAt( p.toArray() ) ||
             snake.isAt( p.toArray() )) {
             return endGame();

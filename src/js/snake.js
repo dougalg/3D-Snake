@@ -1,7 +1,7 @@
 var THREE = require('threejs/build/three');
 var Lazy = require('lazy.js/lazy');
 const SNAKE_COLOR = 0x00ffff;
-const BASE_SPEED = 0.4;
+const BASE_SPEED = 0.3;
 
 /**
  * @class Snake - A snake game's snake, a collection of squares
@@ -27,6 +27,8 @@ var Snake = function (space, scene) {
     }
     this.positions = {};
 
+    this.setDirection('x', 1);
+
     return this;
 };
 
@@ -49,8 +51,6 @@ Snake.prototype.spawn = function(options) {
     this.populate(pos, pos, pos);
 
     this.segments[0].target.position.x += 1;
-
-    this.setDirection('x', 1);
 
     return this;
 };
@@ -160,8 +160,11 @@ Snake.prototype.setUpNextMove = function() {
     var dir = this.currentDirection = this.futureDirection;
     this.positions = {};
     this.segments.forEach((segment, index) => {
-        this.positions[segment.current.position.toArray()] = true;
         if (index > 0) {
+            this.dispatchEvent({
+                type: "move",
+                position: this.segments[0].target.position
+            });
             // If the snake is turning here, add a temporary block to smooth animations
             let fp = this.segments[index-1].current.position;
             // Follow the block in front
@@ -175,12 +178,8 @@ Snake.prototype.setUpNextMove = function() {
             }
         }
         segment.remainingTime = this.moveSpeed;
+        this.positions[segment.current.position.toArray()] = true;
     }.bind(this));
-
-    this.dispatchEvent({
-        type: "move",
-        position: this.segments[0].target.position
-    });
 };
 
 Snake.prototype.isAt = function(p) {
