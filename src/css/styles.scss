@@ -1,9 +1,21 @@
 html {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 *, *:before, *:after {
-  box-sizing: inherit;
+    box-sizing: inherit;
+}
+
+body {
+    margin: 0;
+}
+
+.centered {
+    display: inline-block;
+    position: absolute;
+    transform: translateX(-50%) translateY(-50%);
+    left: 50%;
+    top: 50%;
 }
 
 #container {
@@ -18,29 +30,28 @@ html {
     -moz-transform: rotateX(0deg) rotateY(0deg);
 }
 
-.background, .container {
-    left: 0;
-    top: 0;
-    position: absolute;
-    width: 800px;
-    height: 800px;
-}
 .background {
-    background-color: #eff;
+    background-color: #141F1F;
     opacity: 0.5;
+    width: 100%;
+    height: 100%;
 }
-.container {
+
+.modal {
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0px 0px 15px #BFFFFF;
+    border-radius: 20px;
 }
 
 button {
+    transition: all 0.3s;
     color: #000;
-    border-radius: 0.5em;
+    border-radius: 0.2em;
     border: 0px;
-    padding: 0.5em;
-    background-color: #eee;
+    padding: 0.2em 1em;
+    background-color: #98DADA;
     &:focus {
         outline: none;
     }
@@ -61,17 +72,17 @@ button {
 }
 
 .start-screen {
-    background-color: #fff;
+    background-color: #fcfcfc;
 }
 
 .info {
-    width: 50%;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin: auto;
     text-align: center;
-
+    padding: 2em 6em;
+    border-radius: 20px;
+    
     h1 {
         margin-bottom: 0;
     }
@@ -79,7 +90,6 @@ button {
     button {
         font-family: "Times New Roman";
         font-size: 3em;
-        width: 50%;
         margin: 0.5em auto;
     }
   
