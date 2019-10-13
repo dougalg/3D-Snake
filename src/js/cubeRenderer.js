@@ -1,6 +1,6 @@
 var THREE = require('three');
 const LIGHT_BOX_COLOR = 0xeeeeee;
-const HIGHLIGHT_BOX_COLOR = 0x330000;
+// const HIGHLIGHT_BOX_COLOR = 0x330000;
 
 /**
  * @class CubeRenderer - Renders cubes

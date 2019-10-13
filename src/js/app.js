@@ -55,7 +55,6 @@ var main = function() {
 
     function addListeners () {
         document.getElementById("startButton").addEventListener("click", startGame);
-        // document.getElementById("resetButton").addEventListener("click", resetGame);
         snake.addEventListener( "move", onMove );
         controls.addEventListener( "rotated", setRotatedAxes );
         controls.addEventListener( "change", render );
