@@ -1,4 +1,4 @@
-var THREE = require('threejs/build/three');
+var THREE = require('three');
 const LIGHT_BOX_COLOR = 0xeeeeee;
 const HIGHLIGHT_BOX_COLOR = 0x330000;
 

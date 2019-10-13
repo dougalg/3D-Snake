@@ -1,4 +1,4 @@
-var THREE = require('threejs/build/three');
+var THREE = require('three');
 
 THREE.DougalControls = function ( object, domElement ) {
 

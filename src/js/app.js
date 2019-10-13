@@ -1,5 +1,5 @@
 require('../css/styles');
-var THREE = require('threejs/build/three');
+var THREE = require('three');
 require('./three.dougalControls');
 var CubeRenderer = require('./cubeRenderer');
 var Snake = require('./snake');
@@ -19,7 +19,7 @@ var main = function() {
     var init = function() {
         var w, h;
         h = w = 800;
-        var boxWidth = 15;
+        var boxWidth = 11;
 
         var canvas = document.getElementById('game-canvas');
         scoreEl = document.getElementsByClassName('score')[0];
@@ -104,12 +104,12 @@ var main = function() {
 
     function onMove(options) {
         var p = options.position;
-        if (snake.isAt( p.toArray()) ) {
-            console.log('self destruct');
-        }
-        if (!this.space.hasCubeAt( p.toArray() )) {
-            console.log('edge');
-        }
+        // if (snake.isAt( p.toArray()) ) {
+        //     console.log('self destruct');
+        // }
+        // if (!this.space.hasCubeAt( p.toArray() )) {
+        //     console.log('edge');
+        // }
         if (!this.space.hasCubeAt( p.toArray() ) ||
             snake.isAt( p.toArray() )) {
             return endGame();
@@ -161,9 +161,15 @@ var main = function() {
         renderer.render( scene, camera );
     }
 
+    function display() {
+        document.getElementById('loading').style.display = "hidden";
+        document.getElementById('app').style.display = "";
+    }
+
     window.onload = function() {
         init();
         animate();
+        display();
     };
 
 };

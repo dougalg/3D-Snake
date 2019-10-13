@@ -1,5 +1,4 @@
-var THREE = require('threejs/build/three');
-var Lazy = require('lazy.js/lazy');
+var THREE = require('three');
 const SNAKE_COLOR = 0x00ffff;
 const BASE_SPEED = 0.3;
 
@@ -94,10 +93,10 @@ Snake.prototype.isInverseDirection = function(a, b) {
 }
 
 Snake.prototype.clear = function() {
-    var segs = Lazy(this.segments).map((seg) => seg.current).concat(
-        Lazy(this.tempCubes).toArray().map(([key, val]) => val )
+    var segs = (this.segments).map((seg) => seg.current).concat(
+        Object.entries(this.tempCubes).map(([key, val]) => val)
     );
-    this.scene.remove.apply(this.scene, segs.value());
+    this.scene.remove.apply(this.scene, segs);
     this.tempCubes = {};
     this.segments = [];
     this.moveSpeed = BASE_SPEED;
@@ -179,7 +178,7 @@ Snake.prototype.setUpNextMove = function() {
         }
         segment.remainingTime = this.moveSpeed;
         this.positions[segment.current.position.toArray()] = true;
-    }.bind(this));
+    });
 };
 
 Snake.prototype.isAt = function(p) {

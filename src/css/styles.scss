@@ -28,6 +28,7 @@ body {
     -moz-transform-style: preserve-3d;
     -webkit-transform: rotateX(0deg) rotateY(0deg);
     -moz-transform: rotateX(0deg) rotateY(0deg);
+    transform: rotateX(0deg) rotateY(0deg);
 }
 
 .background {
