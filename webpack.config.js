@@ -34,13 +34,6 @@ module.exports = {
                     },
                 ],
             },
-            {
-                test: /src\/js\/.*\.js$/,
-                loader: "babel-loader"
-            },
         ],
     },
-    plugins: [
-        //new webpack.optimize.UglifyJsPlugin()
-    ]
 };

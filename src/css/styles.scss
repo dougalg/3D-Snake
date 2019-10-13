@@ -2,7 +2,9 @@ html {
     box-sizing: border-box;
 }
 
-*, *:before, *:after {
+*,
+*:before,
+*:after {
     box-sizing: inherit;
 }
 
@@ -53,9 +55,7 @@ button {
     border: 0px;
     padding: 0.2em 1em;
     background-color: #98DADA;
-    &:focus {
-        outline: none;
-    }
+    &:focus,
     &:hover {
         background-color: #ddd;
     }
